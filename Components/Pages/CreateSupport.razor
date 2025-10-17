@@ -1,0 +1,71 @@
+﻿@using CodeForProject.Services.Interfaces
+@using CodeForProject.Models;
+@rendermode InteractiveServer
+@inject IDatabaseService databaseService
+@page "/createsupport"
+
+<h3>Opret supportsag</h3>
+
+<EditForm Model="@supportMessage" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="mb-3">
+        <label for="name" class="form-label">Navn</label>
+        <InputText id="name" class="form-control" @bind-Value="supportMessage.Name" />
+        <ValidationMessage For="@(() => supportMessage.Name)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="email" class="form-label">E-mail</label>
+        <InputText id="email" class="form-control" @bind-Value="supportMessage.Email" />
+        <ValidationMessage For="@(() => supportMessage.Email)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="tel" class="form-label">Telefonnummer</label>
+        <InputText id="tel" class="form-control" @bind-Value="supportMessage.TelephoneNumber" />
+        <ValidationMessage For="@(() => supportMessage.TelephoneNumber)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="complaint" class="form-label">Type af henvendelse</label>
+        <InputSelect id="complaint" class="form-select" @bind-Value="supportMessage.ComplaintType">
+            <option value="">-- Vælg type --</option>
+            <option value="Fakturering">Fakturering</option>
+            <option value="Retur/garantisag">Retur/garantisag</option>
+            <option value="Levering">Levering</option>
+            <option value="Generelt/andet">Generelt/andet</option>
+        </InputSelect>
+        <ValidationMessage For="@(() => supportMessage.ComplaintType)" />
+    </div>
+
+    <div class="mb-3">
+        <label for="description" class="form-label">Beskrivelse</label>
+        <InputTextArea id="description" class="form-control" rows="4" @bind-Value="supportMessage.Description" />
+        <ValidationMessage For="@(() => supportMessage.Description)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Send henvendelse</button>
+</EditForm>
+
+@if (successMessage is not null)
+{
+    <div class="alert alert-success mt-3">@successMessage</div>
+}
+
+@code {
+    private SupportMessage supportMessage = new();
+    private string? successMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        supportMessage.SubmissionDate = DateTime.UtcNow;
+        await databaseService.UpsertSupportMessage(supportMessage);
+
+        successMessage = "Din henvendelse er sendt. Tak fordi du kontaktede os!";
+        supportMessage = new(); // Nulstil formularen
+    }
+}
+
+

@@ -1,0 +1,64 @@
+﻿@page "/supportlist"
+@using CodeForProject.Services.Interfaces
+@using CodeForProject.Models;
+@inject IDatabaseService databaseService
+
+<h3 class="mb-4">Supporthenvendelser</h3>
+
+@if (isLoading)
+{
+    <div class="text-center mt-5">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Indlæser...</span>
+        </div>
+        <p class="mt-3">Indlæser henvendelser...</p>
+    </div>
+}
+else if (supportMessages is null || supportMessages.Count == 0)
+{
+    <div class="alert alert-info">Der er ingen supporthenvendelser at vise.</div>
+}
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+        @foreach (var item in supportMessages)
+        {
+            <div class="col">
+                <div class="card shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">@item.Name</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">@item.Email</h6>
+                        <p class="card-text"><strong>Telefon:</strong> @item.TelephoneNumber</p>
+                        <p class="card-text"><strong>Type:</strong> @item.ComplaintType</p>
+                        <p class="card-text"><strong>Beskrivelse:</strong><br /> @item.Description</p>
+                        <p class="card-text text-muted small">
+                            <em>Indsendt: @item.SubmissionDate.ToLocalTime().ToString("dd-MM-yyyy HH:mm")</em>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+@code {
+    private List<SupportMessage>? supportMessages;
+    private bool isLoading = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            supportMessages = await databaseService.GetSupportMessagesAsync();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Fejl under hentning af data: {ex.Message}");
+        }
+        finally
+        {
+            isLoading = false;
+        }
+    }
+}
+
