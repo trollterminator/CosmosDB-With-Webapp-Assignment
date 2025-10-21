@@ -46,3 +46,8 @@ To update the home page.
 Some login features could be handy, so that not all the supporttickets were visible for everyone. 
 
 Also some feedback loop for the supportticket could be added, as a Commenting-thread, were supporters can respond on thet ticket. 
+
+The way the connectionstring is handled is not very secure... Some tokenization would be much better -
+or maybe adding the primary key and uri to the Appsettings.json file and adding the appsettings.json file to the gitignore, could be a better solution.
+
+Or even adding the settings as variables on the Azure Platform, and then fetching them/hosting the application on azure. 
