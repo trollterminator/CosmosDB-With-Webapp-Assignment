@@ -1,5 +1,5 @@
 # CosmosDB Assignment M4.04
-
+### made by Jacob Lageri
 ## The Purpose of This Assignment
 
 This project was created for assignment 4.04 in the cloud computing course.
